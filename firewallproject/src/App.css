@@ -1,0 +1,32 @@
+.App {
+  text-align: center;
+}
+
+.heading{
+  text-align: center;
+}
+
+.containerForm{
+  display: flex;
+  justify-content: center;
+}
+
+.separator{
+  border-left: 6px solid #1240AB;
+  height: auto;
+}
+
+.WhiteArrContainer{
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+}
+
+.WhiteListHead {
+  text-decoration-line:underline;
+  align-self:stretch;
+}
+
+.TrafficTable{
+  margin: 30px;
+}
