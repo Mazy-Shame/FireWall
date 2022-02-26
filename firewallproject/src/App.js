@@ -24,7 +24,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1 className="heading">Add allowed addresses</h1>
+      <h1 className="heading">FireWall Manage</h1>
 
       <div className="containerForm">
 
