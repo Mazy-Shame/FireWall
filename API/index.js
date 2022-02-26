@@ -1,3 +1,4 @@
+const e = require('cors');
 const cors = require('cors');
 const express = require('express');
 const fs = require("fs");
@@ -82,12 +83,17 @@ app.get("/getPackages", function(req,res) {
     const packList = fs.readFileSync(dataPath,"utf-8");
     const list = JSON.parse(packList);
 
+    //парсинг пакетов
     let parse = list.map( (el) => {
+
+        let protocols = el._source.layers.frame["frame.protocols"].split(":")
+
+
         return (
             {
                 "ip_src": el._source.layers.ip["ip.src"],
                 "ip_dst": el._source.layers.ip["ip.dst"],
-                "protocols": el._source.layers.frame["frame.protocols"],
+                "protocols": protocols,
                 "mac_src": el._source.layers.eth["eth.src"],
                 "mac_dst": el._source.layers.eth["eth.dst"],
                 "tcp_flags_syn": el._source.layers.tcp["tcp.flags_tree"]["tcp.flags.syn"],
@@ -97,7 +103,41 @@ app.get("/getPackages", function(req,res) {
         )
     })
 
-    res.send(parse);
-    console.log(parse);
+    let hosts = []
+
+    //парсинг хостов
+    parse.forEach(el => {
+
+        if (!hosts.includes(el.ip_src)) {
+            hosts.push(el.ip_src)
+        }
+    });
+
+
+    hosts = hosts.map( el => {
+        return({
+            "ip": el,
+            "packages": [],
+            "isSafe": true,
+            "dangerous": null,
+            "allowed": true
+        })
+    })
+
+    
+    // добавление пакетов, которые исходят от ip адреса
+    parse.forEach( el => {
+
+        hosts.forEach( el1 => {
+
+            if (el1.ip == el.ip_src){
+                el1.packages.push(el)
+            }
+
+        })
+    })
+
+
+    res.send(hosts);
 
 })

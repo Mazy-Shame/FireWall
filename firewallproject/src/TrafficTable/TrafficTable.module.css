@@ -1,0 +1,25 @@
+.tableCl {
+	width: 100%;
+	border: none;
+	margin-bottom: 20px;
+}
+
+.headCl {
+    font-weight: bold;
+	text-align: left;
+	border: none;
+	padding: 10px 15px;
+	background: #d8d8d8;
+	font-size: 14px;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+.tdCl {
+    text-align: left;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	padding: 10px 15px;
+	font-size: 14px;
+	vertical-align: top;
+}

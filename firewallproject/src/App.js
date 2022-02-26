@@ -28,18 +28,13 @@ function App() {
 
       <div className="containerForm">
 
-        <AddForm/>
+        {/* <AddForm/> */}
 
         <div className="separator"></div>
 
         <div className="WhiteArrContainer">
         <h2 className="WhiteListHead">White List</h2>
-        {WhiteArr.map( el => {
-          return(
-            <WhiteList/>
-          )
-        })
-        }
+        
         </div>
 
       </div>
