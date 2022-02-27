@@ -1,47 +1,49 @@
 import React, {useState, useEffect} from "react";
-import AddForm from "./AddForm/AddForm";
 import './App.css'
-import GraphTraffic from "./GarphTraffic/GraphTraffic";
-import WhiteList from "./WhiteList/WhiteList";
-import "@progress/kendo-theme-material/dist/all.css";
+// import GraphTraffic from "./GarphTraffic/GraphTraffic";
+// import WhiteList from "./WhiteList/WhiteList";
+// import "@progress/kendo-theme-material/dist/all.css";
 import "hammerjs";
 import axios from "axios";
 import TrafficTable from "./TrafficTable/TrafficTable";
+import HostAcList from "./HostsAcList/HostAcList";
+import { useDispatch } from 'react-redux';
 
 
 function App() {
 
-  const [WhiteArr, setWhiteArr] = useState([
-    
-  ])
+  const dispatch = useDispatch()
 
-  useEffect(() => {
-    axios.get('http://localhost:3333/whitelist').then( response => {
-      setWhiteArr(response.data)
-    })
+  useEffect( () => {
+
+    axios.get('http://localhost:3333/getPackages').then( response => {
+            let data = response.data
+            dispatch({type: "SET-HOSTS", hosts: data})
+        })
+
+
   }, [])
-  
 
   return (
     <div className="App">
-      <h1 className="heading">FireWall Manage</h1>
+      <h1 className="heading">Firewall management</h1>
 
       <div className="containerForm">
 
-        {/* <AddForm/> */}
-
-        <div className="separator"></div>
 
         <div className="WhiteArrContainer">
-        <h2 className="WhiteListHead">White List</h2>
-        
+            
+            <h2 className="WhiteListHead">Hosts List</h2>
+            <HostAcList/>
+
+  
         </div>
 
       </div>
 
       <div className="TrafficTable">
 
-        <TrafficTable/>
+        <TrafficTable />
 
       </div>
 
