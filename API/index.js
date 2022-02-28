@@ -137,6 +137,17 @@ app.get("/getPackages", function(req,res) {
         })
     })
 
+    
+    //проверка на TCP SYN Flood
+    hosts.forEach( el => {
+        el.packages.forEach( pack => {
+
+            if (pack.tcp_flags_ack == 0 && pack.tcp_flags_syn == 1){
+                el.isSafe = false
+                el.dangerous = "TCP SYN flood"
+            }
+        })
+    })
 
     res.send(hosts);
 

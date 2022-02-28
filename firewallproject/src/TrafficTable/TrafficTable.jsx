@@ -53,7 +53,7 @@ function TrafficTable(props) {
                             <tbody>
                                 <tr> 
                                     <td>{el.ip}</td> 
-                                    <td>{el.isSafe ? "Безопасно" : "Опасно"}</td> 
+                                    <td className={el.isSafe? 'safe': 'danger'}>{el.isSafe ? "Безопасно" : "Опасно"}</td> 
                                     <td colSpan={3}>{el.dangerous == null ? "Опасность не определена": el.dangerous}</td>
                                 </tr>
                                 

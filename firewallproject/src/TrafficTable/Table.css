@@ -79,6 +79,12 @@ tr:last-child td.last {
     -webkit-border-bottom-right-radius:5px; /* Saf3-4 */
 }
 
-/* .tdclsp {
-    colspan: 2;
-} */
+.safe {
+    background: rgb(105, 199, 105);
+    color: white;
+}
+
+.danger {
+    background: rgb(211, 79, 79);
+    color: white;
+}

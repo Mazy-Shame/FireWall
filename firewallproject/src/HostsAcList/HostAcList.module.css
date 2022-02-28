@@ -70,3 +70,7 @@
       opacity: 0;
     }
   }
+
+  .ListContainer {
+      text-align: left;
+  }

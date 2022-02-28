@@ -23,3 +23,11 @@
 	font-size: 14px;
 	vertical-align: top;
 }
+
+.safe {
+	background-color: #19e787;
+}
+
+.danger {
+	background-color: #ff0055;
+}

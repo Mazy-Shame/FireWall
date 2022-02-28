@@ -29,7 +29,7 @@ function HostAcList() {
     else{
 
         return (
-            <div>
+            <div className={styles.ListContainer}>
                 {
                     state.HostsList.map( el => {
                         return (
