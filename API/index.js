@@ -88,16 +88,26 @@ app.get("/getPackages", function(req,res) {
 
         let protocols = el._source.layers.frame["frame.protocols"].split(":")
 
+        let syn
+        let ack
+
+        try {
+            syn = el._source.layers.tcp["tcp.flags_tree"]["tcp.flags.syn"]
+            ack = el._source.layers.tcp["tcp.flags_tree"]["tcp.flags.ack"]
+        } catch (error) {
+            syn = "1"
+            ack = "1"
+        }
 
         return (
-            {
+            { 
                 "ip_src": el._source.layers.ip["ip.src"],
                 "ip_dst": el._source.layers.ip["ip.dst"],
                 "protocols": protocols,
                 "mac_src": el._source.layers.eth["eth.src"],
                 "mac_dst": el._source.layers.eth["eth.dst"],
-                "tcp_flags_syn": el._source.layers.tcp["tcp.flags_tree"]["tcp.flags.syn"],
-                "tcp_flags_ack": el._source.layers.tcp["tcp.flags_tree"]["tcp.flags.ack"],
+                "tcp_flags_syn": syn,
+                "tcp_flags_ack": ack,
                 "frame_time_relative": el._source.layers.frame["frame.time_relative"]
             }
         )
