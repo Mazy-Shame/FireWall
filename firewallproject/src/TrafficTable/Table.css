@@ -16,6 +16,11 @@ table {
     background-color:rgba(15, 97, 204, 0.2)
 }
 
+.showtext{
+    background:rgba(87, 8, 214, 0.2);
+    background-color:rgba(87, 8, 214, 0.2);
+}
+
 th, td {
     padding:18px 28px 18px; 
     text-align:center; 
@@ -87,4 +92,8 @@ tr:last-child td.last {
 .danger {
     background: rgb(211, 79, 79);
     color: white;
+}
+
+.unknown {
+    background: rgb(233, 188, 40);
 }

@@ -2,6 +2,8 @@ const e = require('cors');
 const cors = require('cors');
 const express = require('express');
 const fs = require("fs");
+const base64 = require('base-64');
+const utf8 = require('utf8');
 
 const app = express();
 const jsonParser = express.json();
@@ -91,6 +93,12 @@ app.get("/getPackages", function(req,res) {
         let syn
         let ack
 
+        let ipsrc
+        let ipdst
+
+        let jsonbody
+
+        //если флаги существуют
         try {
             syn = el._source.layers.tcp["tcp.flags_tree"]["tcp.flags.syn"]
             ack = el._source.layers.tcp["tcp.flags_tree"]["tcp.flags.ack"]
@@ -99,16 +107,33 @@ app.get("/getPackages", function(req,res) {
             ack = "1"
         }
 
+        //если поле ip существует
+        try {
+            ipsrc = el._source.layers.ip["ip.src"]
+            ipdst = el._source.layers.ip["ip.dst"]
+        } catch (error) {
+            ipsrc = "arp"
+            ipdst = "arp"
+        }
+
+        //если существует тело запроса
+        try {
+            jsonbody = el._source.layers.http["http.file_data"]
+        } catch (error) {
+            jsonbody = null
+        }
+
         return (
             { 
-                "ip_src": el._source.layers.ip["ip.src"],
-                "ip_dst": el._source.layers.ip["ip.dst"],
+                "ip_src": ipsrc,
+                "ip_dst": ipdst,
                 "protocols": protocols,
                 "mac_src": el._source.layers.eth["eth.src"],
                 "mac_dst": el._source.layers.eth["eth.dst"],
                 "tcp_flags_syn": syn,
                 "tcp_flags_ack": ack,
-                "frame_time_relative": el._source.layers.frame["frame.time_relative"]
+                "frame_time_relative": el._source.layers.frame["frame.time_relative"],
+                "json_body": JSON.parse(jsonbody)
             }
         )
     })
@@ -147,18 +172,57 @@ app.get("/getPackages", function(req,res) {
         })
     })
 
-    
-    //проверка на TCP SYN Flood
+    // var encoded = 'Zm9vIMKpIGJhciDwnYyGIGJheg==';
+    // var bytes = base64.decode(encoded);
+    // var text = utf8.decode(bytes);
+    // console.log(text);
+
+    //начинаются проверки
     hosts.forEach( el => {
+        let i = 0
         el.packages.forEach( pack => {
 
-            if (pack.tcp_flags_ack == 0 && pack.tcp_flags_syn == 1){
+            //проверка на TCP SYN Flood
+            i++
+            if (pack.tcp_flags_ack == 0 && pack.tcp_flags_syn == 1 && i>=5){
                 el.isSafe = false
                 el.dangerous = "TCP SYN flood"
             }
+
+            //проверка на base64
+            if (pack.json_body != null) {
+                let code = pack.json_body.code.split('')
+                console.log(code);
+
+                code.forEach( word => {
+                    if (word != ' ' && code[code.length - 1] == '=' && code.length % 4 == 0) {
+                        el.isSafe = "unknown"
+                        el.dangerous = "Base64 Encode"
+                    }
+                })
+                
+            }
+
+            if (pack.json_body != null){
+                let code = pack.json_body.code
+                let bytes = base64.decode(code);
+                let text = utf8.decode(bytes);
+
+                pack.json_body = text
+            }
+
         })
+
     })
 
     res.send(hosts);
+
+})
+
+app.post("/getPackages", jsonParser, function(req,res) {
+
+    let code = req.body
+
+    res.send(code)
 
 })

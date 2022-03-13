@@ -24,6 +24,10 @@ function TrafficTable(props) {
         }
     }
 
+    const showBase64 = (text) => {
+
+
+    }
 
 
     if (state.HostsList == null){
@@ -53,7 +57,9 @@ function TrafficTable(props) {
                             <tbody>
                                 <tr> 
                                     <td>{el.ip}</td> 
-                                    <td className={el.isSafe? 'safe': 'danger'}>{el.isSafe ? "Безопасно" : "Опасно"}</td> 
+                                    <td className={el.isSafe == true? 'safe': el.isSafe == 'unknown'? 'unknown': 'danger'}>
+                                        {el.isSafe == true ? "Безопасно" : el.isSafe == 'unknown'? 'Неопределено': 'Опасно'}
+                                    </td> 
                                     <td colSpan={3}>{el.dangerous == null ? "Опасность не определена": el.dangerous}</td>
                                 </tr>
                                 
@@ -62,7 +68,10 @@ function TrafficTable(props) {
                                         <tr>
                                             <td className='packages' >IP отправителя: {el1.ip_src}</td>
                                             <td className='packages'>IP получателя: {el1.ip_dst}</td>
-                                            <td className='packages'>Протокол: {el1.protocols[el1.protocols.length - 1]}</td>
+                                            <td className={el1.json_body == null ? "packages": "showtext"}>
+                                                Тип пакета {el1.protocols[el1.protocols.length - 1]}
+                                                {el1.json_body == null ? <div></div>: <textarea value={el1.json_body}></textarea>}
+                                            </td>
                                             <td className='packages'>MAC адрес отправителя: {el1.mac_src}</td>
                                             <td className='packages'>MAC адрес получателя: {el1.mac_dst}</td>
                                         </tr>
