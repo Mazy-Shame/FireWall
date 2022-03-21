@@ -26,7 +26,7 @@ function TrafficTable(props) {
 
     const showBase64 = (text) => {
 
-        a = "jellu"
+    
     }
 
 
