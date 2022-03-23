@@ -4,6 +4,7 @@ const express = require('express');
 const fs = require("fs");
 const base64 = require('base-64');
 const utf8 = require('utf8');
+const { log } = require('console');
 
 const app = express();
 const jsonParser = express.json();
@@ -223,6 +224,7 @@ app.post("/getPackages", jsonParser, function(req,res) {
 
     let code = req.body
 
+    console.log("hi");
     res.send(code)
 
 })
