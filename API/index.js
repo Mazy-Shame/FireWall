@@ -185,6 +185,28 @@ app.get("/getPackages", function(req,res) {
                 el.dangerous = "TCP SYN flood"
             }
 
+            //проверка на base64
+            if (pack.json_body != null) {
+                let code = pack.json_body.code.split('')
+                console.log(code);
+
+                code.forEach( word => {
+                    if (word != ' ' && code[code.length - 1] == '=' && code.length % 4 == 0) {
+                        el.isSafe = "unknown"
+                        el.dangerous = "Base64 Encode"
+                    }
+                })
+                
+            }
+
+            if (pack.json_body != null){
+                let code = pack.json_body.code
+                let bytes = base64.decode(code);
+                let text = utf8.decode(bytes);
+
+                pack.json_body = text
+            }
+
         })
 
     })
