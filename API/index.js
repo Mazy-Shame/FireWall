@@ -1,11 +1,6 @@
-const e = require('cors');
 const cors = require('cors');
 const express = require('express');
 const fs = require("fs");
-const base64 = require('base-64');
-const utf8 = require('utf8');
-const { log } = require('console');
-
 const app = express();
 const jsonParser = express.json();
 
@@ -190,27 +185,6 @@ app.get("/getPackages", function(req,res) {
                 el.dangerous = "TCP SYN flood"
             }
 
-            //проверка на base64
-            if (pack.json_body != null) {
-                let code = pack.json_body.code.split('')
-                console.log(code);
-
-                code.forEach( word => {
-                    if (word != ' ' && code[code.length - 1] == '=' && code.length % 4 == 0) {
-                        el.isSafe = "unknown"
-                        el.dangerous = "Base64 Encode"
-                    }
-                })
-                
-            }
-
-            if (pack.json_body != null){
-                let code = pack.json_body.code
-                let bytes = base64.decode(code);
-                let text = utf8.decode(bytes);
-
-                pack.json_body = text
-            }
 
         })
 
