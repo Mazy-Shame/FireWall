@@ -172,48 +172,8 @@ app.get("/getPackages", function(req,res) {
         })
     })
 
-    // var encoded = 'Zm9vIMKpIGJhciDwnYyGIGJheg==';
-    // var bytes = base64.decode(encoded);
-    // var text = utf8.decode(bytes);
-    // console.log(text);
 
     //начинаются проверки
-    hosts.forEach( el => {
-        let i = 0
-        el.packages.forEach( pack => {
-
-            //проверка на TCP SYN Flood
-            i++
-            if (pack.tcp_flags_ack == 0 && pack.tcp_flags_syn == 1 && i>=5){
-                el.isSafe = false
-                el.dangerous = "TCP SYN flood"
-            }
-
-            //проверка на base64
-            if (pack.json_body != null) {
-                let code = pack.json_body.code.split('')
-                console.log(code);
-
-                code.forEach( word => {
-                    if (word != ' ' && code[code.length - 1] == '=' && code.length % 4 == 0) {
-                        el.isSafe = "unknown"
-                        el.dangerous = "Base64 Encode"
-                    }
-                })
-                
-            }
-
-            if (pack.json_body != null){
-                let code = pack.json_body.code
-                let bytes = base64.decode(code);
-                let text = utf8.decode(bytes);
-
-                pack.json_body = text
-            }
-
-        })
-
-    })
 
     res.send(hosts);
 
