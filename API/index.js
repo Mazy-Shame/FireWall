@@ -173,6 +173,8 @@ app.get("/getPackages", function(req,res) {
     })
 
 
+    let a = 12
+
     //начинаются проверки
     hosts.forEach( el => {
         let i = 0
