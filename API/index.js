@@ -98,6 +98,11 @@ app.get("/getPackages", function(req,res) {
 
         let jsonbody
 
+        let mac_src
+        let mac_dst
+
+        let wlan_fctype
+
         //если флаги существуют
         try {
             syn = el._source.layers.tcp["tcp.flags_tree"]["tcp.flags.syn"]
@@ -112,8 +117,8 @@ app.get("/getPackages", function(req,res) {
             ipsrc = el._source.layers.ip["ip.src"]
             ipdst = el._source.layers.ip["ip.dst"]
         } catch (error) {
-            ipsrc = "arp"
-            ipdst = "arp"
+            ipsrc = "unknown"
+            ipdst = "unknown"
         }
 
         //если существует тело запроса
@@ -123,17 +128,36 @@ app.get("/getPackages", function(req,res) {
             jsonbody = null
         }
 
+        //если существует eth
+        try {
+            mac_src = el._source.layers.eth["eth.src"]
+            mac_dst = el._source.layers.eth["eth.dst"]
+        } catch (error) {
+            mac_src = "00:00:00:00"
+            mac_dst = "00:00:00:00"
+        }
+
+        //если существует wlan
+        try {
+            
+        } catch (error) {
+            
+        }
+
         return (
             { 
                 "ip_src": ipsrc,
                 "ip_dst": ipdst,
                 "protocols": protocols,
-                "mac_src": el._source.layers.eth["eth.src"],
-                "mac_dst": el._source.layers.eth["eth.dst"],
+                "mac_src": mac_src,
+                "mac_dst": mac_dst,
                 "tcp_flags_syn": syn,
                 "tcp_flags_ack": ack,
                 "frame_time_relative": el._source.layers.frame["frame.time_relative"],
-                "json_body": JSON.parse(jsonbody)
+                "json_body": JSON.parse(jsonbody),
+                "wlan_type": el._source.layers.wlan["wlan.fc_tree"]["wlan.fc.subtype"],
+                "wlan_address_src": el._source.layers.wlan["wlan.ra"],
+                "wlan_address_dst": el._source.layers.wlan["wlan.sa"]
             }
         )
     })
@@ -173,7 +197,7 @@ app.get("/getPackages", function(req,res) {
     })
 
 
-    let a = 12
+    let a = 12/
 
     //начинаются проверки
     hosts.forEach( el => {
@@ -207,6 +231,15 @@ app.get("/getPackages", function(req,res) {
                 let text = utf8.decode(bytes);
 
                 pack.json_body = text
+            }
+
+            //проверка на deauthWifi
+            if (pack.wlan_type == "12"){
+                el.isSafe = false
+                el.dangerous = "WiFi Deauth DOS attack"
+                el.ip = pack.wlan_address_src
+                pack.mac_src = pack.wlan_address_src
+                pack.mac_dst = pack.wlan_address_dst
             }
 
         })
