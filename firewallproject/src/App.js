@@ -14,13 +14,16 @@ function App() {
 
   const dispatch = useDispatch()
 
+  
   useEffect( () => {
 
-    axios.get('http://localhost:3333/getPackages').then( response => {
+    setTimeout(function run() {
+      axios.get('http://localhost:3333/getPackages').then( response => {
             let data = response.data
             dispatch({type: "SET-HOSTS", hosts: data})
         })
-
+      setTimeout(run, 2000);
+    }, 2000);
 
   }, [])
 
